@@ -1,23 +1,32 @@
 # Examples
 
-## RfaH (Fold-switching protein)
+Two protein systems with experimentally-resolved alternative conformations.
+Each example ships a sequence input, reference PDBs, and `run_boltz2.sh` /
+`run_af3.sh` shell scripts. The MSA is fetched from the ColabFold server
+at runtime (no MSA file is committed).
 
-RfaH C-terminal domain switches between α-helix and β-barrel conformations.
+## RfaH (fold-switching protein)
+
+The RfaH C-terminal domain switches between an α-helix fold (2OUG_C) and a
+β-barrel fold (6C6S_D).
 
 ```bash
-cd example/rfah && bash run.sh
+cd example/rfah
+bash run_boltz2.sh       # Boltz-2 sweep, output_boltz2/
+bash run_af3.sh          # AlphaFold 3 sweep, output_af3/ (needs AF3_MODEL_DIR)
 ```
 
 ### Visualization
 
 ```bash
+pip install marimo tmtools matplotlib
 marimo edit example/rfah/visualize_tmscore.py
 ```
 
 <table>
 <tr>
-<td><img src="../md/rfah_alpha_helix.png" width="350"><br><sub>α-helix CTD (beta=+0.60)</sub></td>
-<td><img src="../md/rfah_beta_barrel.png" width="350"><br><sub>β-barrel CTD (beta=-0.45)</sub></td>
+<td><img src="../md/rfah_alpha_helix.png" width="350"><br><sub>α-helix CTD (β=+0.60)</sub></td>
+<td><img src="../md/rfah_beta_barrel.png" width="350"><br><sub>β-barrel CTD (β=-0.45)</sub></td>
 </tr>
 </table>
 
@@ -25,10 +34,13 @@ marimo edit example/rfah/visualize_tmscore.py
 
 ## μ-Opioid Receptor (GPCR)
 
-μ-OR adopts inactive and active conformations.
+μ-OR adopts inactive (4DKL, antagonist-bound) and active (5C1M,
+agonist-bound) conformations.
 
 ```bash
-cd example/muor && bash run.sh
+cd example/muor
+bash run_boltz2.sh
+bash run_af3.sh
 ```
 
 ### Visualization
@@ -39,16 +51,7 @@ marimo edit example/muor/visualize_tmscore.py
 
 <table>
 <tr>
-<td><img src="../md/muor_inactive.png" width="350"><br><sub>Inactive state (beta=-0.45)</sub></td>
-<td><img src="../md/muor_active.png" width="350"><br><sub>Active state (beta=+0.45)</sub></td>
+<td><img src="../md/muor_inactive.png" width="350"><br><sub>Inactive (β=-0.45)</sub></td>
+<td><img src="../md/muor_active.png" width="350"><br><sub>Active (β=+0.45)</sub></td>
 </tr>
 </table>
-
----
-
-## Color Scheme
-
-Predicted structures are colored by pLDDT confidence:
-- **Blue**: High confidence (pLDDT ≥ 90)
-- **White**: Medium confidence
-- **Red**: Low confidence (pLDDT ≤ 50)

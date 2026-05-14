@@ -1,0 +1,14 @@
+{
+  "name": "rfah",
+  "modelSeeds": [42],
+  "sequences": [
+    {
+      "protein": {
+        "id": "A",
+        "sequence": "MQSWYLLYCKRGQLQRAQEHLERQAVNCLAPMITLEKIVRGKRTAVSEPLFPNYLFVEFDPEVIHTTTINATRGVSHFVRFGASPAIVPSAVIHQLSVYKPKDIVDPATPYPGDKVIITEGAFEGFQAIFTEPDGEARSMLLLNLINKEIKHSVKNTEFRKL"
+      }
+    }
+  ],
+  "dialect": "alphafold3",
+  "version": 1
+}
