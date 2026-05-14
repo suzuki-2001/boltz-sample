@@ -100,9 +100,7 @@ This repository builds on the following projects and datasets:
 
 ## Citation
 
-If you use this code, please cite our preprint. An updated version that
-also reports results with AlphaFold 3 is in preparation and will be
-posted shortly; this entry will be updated once it is online.
+If you use this code, please cite our preprint.
 
 ```bibtex
 @article{Suzuki2026.01.23.701250,
