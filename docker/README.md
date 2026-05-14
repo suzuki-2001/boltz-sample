@@ -26,7 +26,8 @@ at <https://github.com/google-deepmind/alphafold3>. Once you have the weights
 locally:
 
 ```bash
-docker build -f third_party/alphafold3/docker/Dockerfile -t prs-af3 third_party/alphafold3
+# Build from the repository root (Dockerfile expects the prs CLI source too).
+docker build -f third_party/alphafold3/docker/Dockerfile -t prs-af3 .
 
 docker run --rm --gpus all \
     -v $PWD:/work -w /work \
@@ -39,6 +40,6 @@ docker run --rm --gpus all \
                 --model_dir /weights
 ```
 
-The upstream AF3 Dockerfile is used unmodified; the PRS patch is already
-applied to the vendored source under `third_party/alphafold3/`. The `prs`
-CLI is installed alongside.
+The PRS β-uniform patch is already applied to the vendored AF3 source under
+`third_party/alphafold3/`. The Dockerfile additionally installs the `prs`
+CLI wrapper so a β-grid sweep is a single command inside the container.
