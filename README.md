@@ -98,6 +98,16 @@ This repository builds on the following projects and datasets:
 - **AFsample2** — Kalakoti & Wallner 2025, *Communications Biology*. [doi.org/10.1038/s42003-025-07791-9](https://doi.org/10.1038/s42003-025-07791-9). The OC23 benchmark targets are used in our evaluations.
 - **IOMemP** — Xie & Huang 2024, *Journal of Chemical Information and Modeling*. [doi.org/10.1021/acs.jcim.3c01936](https://doi.org/10.1021/acs.jcim.3c01936). Membrane-transporter dual-state references are sourced from this benchmark.
 
+## Changelog
+
+- [2026/5/14] Renamed the repository from `boltz-sample` to
+  `pair-representation-scaling`, added AlphaFold 3 as a second backend,
+  simplified the implementation to β-uniform scaling only, switched the
+  user-facing CLI to `prs predict`, and shipped Docker images for both
+  backends.
+- [2026/1/23] Initial release as `boltz-sample`: Boltz-2-only β-uniform
+  scaling with the `boltz sample` subcommand and the rfah / muor examples.
+
 ## Citation
 
 If you use this code, please cite our preprint.
