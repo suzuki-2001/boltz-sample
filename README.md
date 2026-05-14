@@ -87,13 +87,6 @@ pip install marimo tmtools matplotlib
 marimo edit example/rfah/visualize_tmscore.py
 ```
 
-<table>
-<tr>
-<td><img src="md/predict_screen.png" width="400"><br><sub><b>prs predict</b> — β-grid sampling</sub></td>
-<td><img src="md/evaluate_screen.png" width="400"><br><sub><b>marimo viz</b> — TM-score scatter, β-coloured</sub></td>
-</tr>
-</table>
-
 ## Acknowledgements
 
 This repository builds on the following projects and datasets:
