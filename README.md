@@ -5,7 +5,7 @@
 [![JAX](https://img.shields.io/badge/JAX-%E2%89%A50.4-FF6F00?logo=googlecloud&logoColor=white)](https://github.com/jax-ml/jax)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?logo=opensourceinitiative&logoColor=white)](LICENSE)
 
-A small, model-agnostic patch that adds **pair representation scaling** to
+A small, model-agnostic patch that adds pair representation scaling to
 [Boltz-2](https://github.com/jwohlwend/boltz) and
 [AlphaFold 3](https://github.com/google-deepmind/alphafold3). A scalar β
 multiplies the pair representation, `z := (1 + β)·z`, just before the
@@ -15,7 +15,8 @@ membrane transporters, and other dual-state systems.
 
 See the paper for the full method and benchmark:
 [Steering Conformational Sampling in Boltz-2 via Pair Representation Scaling](https://doi.org/10.64898/2026.01.23.701250)
-(bioRxiv 2026).
+(bioRxiv 2026). An updated preprint with the cross-architecture (AlphaFold 3)
+results is in preparation and will be posted shortly.
 
 ![gpcr_si](md/muor.png)
 
@@ -28,8 +29,8 @@ cd pair-representation-scaling
 # Install the prs CLI and the patched Boltz-2 (vendored under third_party/)
 pip install -e ".[boltz]"
 
-# AlphaFold 3 has its own install path (CMake + JAX); follow upstream
-# instructions in third_party/alphafold3/README.md.
+# AlphaFold 3 has its own install path (CMake + JAX); follow the instructions
+# in third_party/alphafold3/README.md.
 ```
 
 A Docker image is provided for each backend; see [docker/](docker/README.md).
@@ -91,39 +92,13 @@ marimo edit example/rfah/visualize_tmscore.py
 
 This repository builds on the following projects and datasets:
 
-- **AlphaFold 3** — Abramson *et al.* 2024, *Nature*. [doi.org/10.1038/s41586-024-07487-w](https://doi.org/10.1038/s41586-024-07487-w). Upstream code vendored under [`third_party/alphafold3/`](third_party/alphafold3/).
+- **Boltz-2** — Passaro *et al.* 2025, *bioRxiv*. [doi.org/10.1101/2025.06.14.659707](https://doi.org/10.1101/2025.06.14.659707). Primary backend; the Boltz-2 source is vendored under [`third_party/boltz/`](third_party/boltz/) with the β patch applied.
+- **Boltz-1** — Wohlwend *et al.* 2024, *bioRxiv*. [doi.org/10.1101/2024.11.19.624167](https://doi.org/10.1101/2024.11.19.624167). Pairformer-diffusion architecture that Boltz-2 inherits.
+- **AlphaFold 3** — Abramson *et al.* 2024, *Nature*. [doi.org/10.1038/s41586-024-07487-w](https://doi.org/10.1038/s41586-024-07487-w). Second backend; source vendored under [`third_party/alphafold3/`](third_party/alphafold3/) with the β patch applied.
 - **AFsample2** — Kalakoti & Wallner 2025, *Communications Biology*. [doi.org/10.1038/s42003-025-07791-9](https://doi.org/10.1038/s42003-025-07791-9). The OC23 benchmark targets are used in our evaluations.
 - **IOMemP** — Xie & Huang 2024, *Journal of Chemical Information and Modeling*. [doi.org/10.1021/acs.jcim.3c01936](https://doi.org/10.1021/acs.jcim.3c01936). Membrane-transporter dual-state references are sourced from this benchmark.
 
-Boltz-2 is the primary backend; the upstream is vendored under
-[`third_party/boltz/`](third_party/boltz/) with the β patch applied. Please
-cite both Boltz papers as requested by the original authors:
-
-```bibtex
-@article{passaro2025boltz2,
-    author  = {Passaro, Saro and Corso, Gabriele and Wohlwend, Jeremy and Reveiz, Mateo
-               and Thaler, Stephan and Somnath, Vignesh Ram and Getz, Noah and
-               Portnoi, Tally and Roy, Julien and Stark, Hannes and Kwabi-Addo, David
-               and Beaini, Dominique and Jaakkola, Tommi and Barzilay, Regina},
-    title   = {Boltz-2: Towards Accurate and Efficient Binding Affinity Prediction},
-    year    = {2025},
-    doi     = {10.1101/2025.06.14.659707},
-    journal = {bioRxiv}
-}
-
-@article{wohlwend2024boltz1,
-    author  = {Wohlwend, Jeremy and Corso, Gabriele and Passaro, Saro and Getz, Noah
-               and Reveiz, Mateo and Leidal, Ken and Swiderski, Wojtek and Atkinson, Liam
-               and Portnoi, Tally and Chinn, Itamar and Silterra, Jacob and Jaakkola, Tommi
-               and Barzilay, Regina},
-    title   = {Boltz-1: Democratizing Biomolecular Interaction Modeling},
-    year    = {2024},
-    doi     = {10.1101/2024.11.19.624167},
-    journal = {bioRxiv}
-}
-```
-
-## This work
+## Citation
 
 ```bibtex
 @article{Suzuki2026.01.23.701250,
