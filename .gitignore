@@ -177,8 +177,5 @@ paper/
 afsample2_dataset/
 iomemp/
 
-# Claude Code
-.claude/
-
 # marimo cache
 __marimo__/
