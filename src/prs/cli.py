@@ -111,7 +111,7 @@ def _run_af3(
 
 
 @click.group()
-@click.version_option()
+@click.version_option(package_name="pair-representation-scaling")
 def cli() -> None:
     """Pair Representation Scaling (PRS): β-grid conformational sampling."""
 
