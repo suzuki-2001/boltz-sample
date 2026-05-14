@@ -161,21 +161,24 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# Boltz prediction outputs
+# Prediction outputs (Boltz / AF3)
 boltz_results_*/
 example/*/output/
+output/
+output_v2/
+output_test/
 
-# af-sample2 dataset
+# Benchmark data and analyses (kept in separate Zenodo / Figshare release)
+benchmark/
+peer-review/
+paper/
+
+# Reference datasets
 afsample2_dataset/
-
-# boltz-sample
-./boltz-sample/
+iomemp/
 
 # Claude Code
 .claude/
 
 # marimo cache
 __marimo__/
-
-# Test outputs
-output_test/

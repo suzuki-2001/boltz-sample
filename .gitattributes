@@ -1,1 +1,2 @@
-*.a3m filter=lfs diff=lfs merge=lfs -text
+# No LFS-tracked files. Sample inputs are committed as regular files.
+* text=auto
