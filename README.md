@@ -15,8 +15,8 @@ membrane transporters, and other dual-state systems.
 
 See the paper for the full method and benchmark:
 [Steering Conformational Sampling in Boltz-2 via Pair Representation Scaling](https://doi.org/10.64898/2026.01.23.701250)
-(bioRxiv 2026). An updated preprint with the cross-architecture (AlphaFold 3)
-results is in preparation and will be posted shortly.
+(bioRxiv 2026). An updated preprint that also reports results with
+AlphaFold 3 is in preparation and will be posted shortly.
 
 ![gpcr_si](md/muor.png)
 
@@ -99,6 +99,10 @@ This repository builds on the following projects and datasets:
 - **IOMemP** — Xie & Huang 2024, *Journal of Chemical Information and Modeling*. [doi.org/10.1021/acs.jcim.3c01936](https://doi.org/10.1021/acs.jcim.3c01936). Membrane-transporter dual-state references are sourced from this benchmark.
 
 ## Citation
+
+If you use this code, please cite our preprint. An updated version that
+also reports results with AlphaFold 3 is in preparation and will be
+posted shortly; this entry will be updated once it is online.
 
 ```bibtex
 @article{Suzuki2026.01.23.701250,
