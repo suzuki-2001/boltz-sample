@@ -14,9 +14,8 @@ recover alternative conformations of fold-switching proteins, GPCRs,
 membrane transporters, and other dual-state systems.
 
 See the paper for the full method and benchmark:
-[Steering Conformational Sampling in Boltz-2 via Pair Representation Scaling](https://doi.org/10.64898/2026.01.23.701250)
-(bioRxiv 2026). An updated preprint that also reports results with
-AlphaFold 3 is in preparation and will be posted shortly.
+[Biasing Conformational Sampling in AlphaFold 3 and Boltz-2 via Pair Representation Scaling](https://doi.org/10.64898/2026.01.23.701250)
+(bioRxiv 2026).
 
 ![gpcr_si](md/muor.png)
 
@@ -100,6 +99,10 @@ This repository builds on the following projects and datasets:
 
 ## Changelog
 
+- [2026/6/24] Posted the revised preprint (v2) to bioRxiv, now titled
+  "Biasing Conformational Sampling in AlphaFold 3 and Boltz-2 via Pair
+  Representation Scaling" and reporting AlphaFold 3 results alongside
+  Boltz-2.
 - [2026/5/14] Renamed the repository from `boltz-sample` to
   `pair-representation-scaling`, added AlphaFold 3 as a second backend,
   simplified the implementation to β-uniform scaling only, switched the
@@ -115,7 +118,7 @@ If you use this code, please cite our preprint.
 ```bibtex
 @article{Suzuki2026.01.23.701250,
     author    = {Suzuki, Shosuke and Amagasa, Toshiyuki},
-    title     = {Steering Conformational Sampling in Boltz-2 via Pair Representation Scaling},
+    title     = {Biasing Conformational Sampling in AlphaFold 3 and Boltz-2 via Pair Representation Scaling},
     year      = {2026},
     doi       = {10.64898/2026.01.23.701250},
     publisher = {Cold Spring Harbor Laboratory},
