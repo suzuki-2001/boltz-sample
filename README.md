@@ -14,8 +14,8 @@ recover alternative conformations of fold-switching proteins, GPCRs,
 membrane transporters, and other dual-state systems.
 
 See the paper for the full method and benchmark:
-[Biasing Conformational Sampling in AlphaFold 3 and Boltz-2 via Pair Representation Scaling](https://doi.org/10.64898/2026.01.23.701250)
-(bioRxiv 2026).
+[Biasing Conformational Sampling in AlphaFold 3 and Boltz-2 via Pair Representation Scaling](https://doi.org/10.1021/acs.jcim.6c02094)
+(Journal of Chemical Information and Modeling, 2026).
 
 ![gpcr_si](md/muor.png)
 
@@ -99,6 +99,8 @@ This repository builds on the following projects and datasets:
 
 ## Changelog
 
+- [2026/8/20] Published in the Journal of Chemical Information and Modeling,
+  [doi.org/10.1021/acs.jcim.6c02094](https://doi.org/10.1021/acs.jcim.6c02094).
 - [2026/6/24] Posted the revised preprint (v2) to bioRxiv, now titled
   "Biasing Conformational Sampling in AlphaFold 3 and Boltz-2 via Pair
   Representation Scaling" and reporting AlphaFold 3 results alongside
@@ -113,15 +115,15 @@ This repository builds on the following projects and datasets:
 
 ## Citation
 
-If you use this code, please cite our preprint.
+If you use this code, please cite our paper.
 
 ```bibtex
-@article{Suzuki2026.01.23.701250,
+@article{Suzuki2026PairRepresentationScaling,
     author    = {Suzuki, Shosuke and Amagasa, Toshiyuki},
     title     = {Biasing Conformational Sampling in AlphaFold 3 and Boltz-2 via Pair Representation Scaling},
     year      = {2026},
-    doi       = {10.64898/2026.01.23.701250},
-    publisher = {Cold Spring Harbor Laboratory},
-    journal   = {bioRxiv}
+    doi       = {10.1021/acs.jcim.6c02094},
+    publisher = {American Chemical Society},
+    journal   = {Journal of Chemical Information and Modeling}
 }
 ```
