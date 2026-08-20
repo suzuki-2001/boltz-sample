@@ -1,7 +1,7 @@
 # Docker
 
-Two containers, one per backend. Both expose the same `prs` CLI, so pick the
-backend that matches the model weights you have access to.
+Two containers, one per backend. Both expose the same `prs` CLI. Pick the one
+that matches the model weights you have access to.
 
 ## Boltz-2
 

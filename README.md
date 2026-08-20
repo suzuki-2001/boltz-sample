@@ -13,6 +13,10 @@ Pairformer stack. Sweeping β at inference time produces ensembles that
 recover alternative conformations of fold-switching proteins, GPCRs,
 membrane transporters, and other dual-state systems.
 
+The change is a few lines in each model, so writing it into your own copy works
+as well. [`patches/`](patches/README.md) shows where those lines go, and the CLI
+here runs the β sweep.
+
 See the paper for the full method and benchmark:
 [Biasing Conformational Sampling in AlphaFold 3 and Boltz-2 via Pair Representation Scaling](https://doi.org/10.1021/acs.jcim.6c02094)
 (Journal of Chemical Information and Modeling, 2026).
@@ -42,10 +46,7 @@ prs patch-af3 /path/to/alphafold3
 export AF3_REPO=/path/to/alphafold3
 ```
 
-Both changes are kept as diffs against a pinned upstream revision in
-[`patches/`](patches/README.md).
-
-A Docker image is available for each backend, see [docker/](docker/README.md).
+A Docker image is available for each backend. See [docker/](docker/README.md).
 
 ## Usage
 
@@ -107,8 +108,7 @@ marimo edit example/rfah/visualize_tmscore.py
 
 This repository builds on the following projects and datasets:
 
-- **Boltz-2** — Passaro *et al.* 2025, *bioRxiv*. [doi.org/10.1101/2025.06.14.659707](https://doi.org/10.1101/2025.06.14.659707). Primary backend, used at version 2.2.1 under the MIT License.
-- **Boltz-1** — Wohlwend *et al.* 2024, *bioRxiv*. [doi.org/10.1101/2024.11.19.624167](https://doi.org/10.1101/2024.11.19.624167). Pairformer-diffusion architecture that Boltz-2 inherits.
+- **Boltz** — Passaro *et al.* 2025, *bioRxiv*. [doi.org/10.1101/2025.06.14.659707](https://doi.org/10.1101/2025.06.14.659707), and Wohlwend *et al.* 2024, *bioRxiv*. [doi.org/10.1101/2024.11.19.624167](https://doi.org/10.1101/2024.11.19.624167). Primary backend, used at version 2.2.1 under the MIT License.
 - **AlphaFold 3** — Abramson *et al.* 2024, *Nature*. [doi.org/10.1038/s41586-024-07487-w](https://doi.org/10.1038/s41586-024-07487-w). Second backend, used at commit `97639ff` under CC BY-NC-SA 4.0.
 - **AFsample2** — Kalakoti & Wallner 2025, *Communications Biology*. [doi.org/10.1038/s42003-025-07791-9](https://doi.org/10.1038/s42003-025-07791-9). The OC23 benchmark targets are used in our evaluations.
 - **IOMemP** — Xie & Huang 2024, *Journal of Chemical Information and Modeling*. [doi.org/10.1021/acs.jcim.3c01936](https://doi.org/10.1021/acs.jcim.3c01936). Membrane-transporter dual-state references are sourced from this benchmark.
