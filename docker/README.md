@@ -1,33 +1,40 @@
 # Docker
 
-Two containers are provided, one per backend. Both expose the same `prs`
-CLI; pick the backend that matches the model weights you have access to.
+Two containers, one per backend. Both expose the same `prs` CLI, so pick the
+backend that matches the model weights you have access to.
 
 ## Boltz-2
 
+Boltz-2 comes from PyPI and the weights are downloaded on first use, so the
+image builds in one step from the repository root.
+
 ```bash
-docker build -f third_party/boltz/docker/Dockerfile -t prs-boltz2 .
+docker build -f docker/boltz2.Dockerfile -t prs-boltz2 .
 
 docker run --rm --gpus all -v $PWD:/work -w /work prs-boltz2 \
     prs predict --model boltz2 \
                 --input example/rfah/boltz2_input.yaml \
                 --output example/rfah/output_boltz2 \
-                --beta "-0.6,-0.3,0,0.3,0.6" \
-                --use_msa_server
+                --beta "-0.6,-0.3,0,0.3,0.6"
 ```
 
-The Boltz-2 weights are downloaded on first use and cached under
-`/cache/boltz` (mount a volume there to persist them across container runs).
+The weights are cached under `/cache/boltz`. Mount a volume there to keep them
+across container runs.
 
 ## AlphaFold 3
 
-AlphaFold 3 inference requires the official model parameters; request access
-at <https://github.com/google-deepmind/alphafold3>. Once you have the weights
-locally:
+AlphaFold 3 inference requires the official model parameters. Request access at
+<https://github.com/google-deepmind/alphafold3>. Build the AlphaFold 3 image
+from a checkout with the patch applied, then add the `prs` CLI on top.
 
 ```bash
-# Build from the repository root (Dockerfile expects the prs CLI source too).
-docker build -f third_party/alphafold3/docker/Dockerfile -t prs-af3 .
+prs patch-af3 /path/to/alphafold3
+
+cd /path/to/alphafold3
+docker build -t alphafold3-prs -f docker/Dockerfile .
+
+cd /path/to/pair-representation-scaling
+docker build -f docker/af3.Dockerfile --build-arg BASE=alphafold3-prs -t prs-af3 .
 
 docker run --rm --gpus all \
     -v $PWD:/work -w /work \
@@ -40,6 +47,6 @@ docker run --rm --gpus all \
                 --model_dir /weights
 ```
 
-The PRS β-uniform patch is already applied to the vendored AF3 source under
-`third_party/alphafold3/`. The Dockerfile additionally installs the `prs`
-CLI wrapper so a β-grid sweep is a single command inside the container.
+The `BASE` build argument names the AlphaFold 3 image to build on. The image
+sets `AF3_REPO=/app/alphafold`, so `prs predict --model af3` finds
+`run_alphafold.py` without `--af3_run`.
