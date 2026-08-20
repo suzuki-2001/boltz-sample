@@ -61,7 +61,8 @@ def _(OUT_BOLTZ, OUT_AF3, REF1, REF2, parse_beta, pd):
     from tmtools import tm_align
 
     def tm_to_ref(sample_path, ref_path):
-        s_chain = next(get_structure(str(sample_path)).get_chains())
+        fmt = "mmcif" if sample_path.suffix == ".cif" else "pdb"
+        s_chain = next(get_structure(str(sample_path), fmt).get_chains())
         r_chain = next(get_structure(str(ref_path)).get_chains())
         coords1, seq1 = get_residue_data(s_chain)
         coords2, seq2 = get_residue_data(r_chain)
@@ -77,7 +78,7 @@ def _(OUT_BOLTZ, OUT_AF3, REF1, REF2, parse_beta, pd):
                 continue
             beta_value = parse_beta(beta_dir.name)
             samples = list(beta_dir.rglob("*_model_*.pdb")) + list(
-                beta_dir.rglob("*_model.cif")
+                beta_dir.rglob("*_model*.cif")
             )
             for s in samples:
                 rows.append({
