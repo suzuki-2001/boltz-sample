@@ -1,10 +1,12 @@
 #!/bin/bash
 # RfaH (fold-switching protein) — AlphaFold 3 β-grid sampling
 # References: 2OUG_C (α-helix CTD), 6C6S_D (β-barrel CTD)
-# Requires: AlphaFold 3 model weights (request from Google) at $AF3_MODEL_DIR
+# Requires: a patched AlphaFold 3 checkout at $AF3_REPO (prs patch-af3 <path>)
+#           and AlphaFold 3 model weights (request from Google) at $AF3_MODEL_DIR
 
 set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+: "${AF3_REPO:?Set AF3_REPO to your patched AlphaFold 3 checkout}"
 : "${AF3_MODEL_DIR:?Set AF3_MODEL_DIR to your AlphaFold 3 model parameters directory}"
 
 prs predict \
