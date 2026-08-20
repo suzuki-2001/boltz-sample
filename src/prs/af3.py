@@ -36,7 +36,7 @@ def is_applied(repo: Path, patch: Path) -> bool:
 
 
 def apply_patch(repo: Path, patch: Path) -> str:
-    """Apply the patch to an AlphaFold 3 checkout and report what happened."""
+    """Apply the patch to an AlphaFold 3 checkout and return a status line."""
     entrypoint = repo / "run_alphafold.py"
     if not entrypoint.exists():
         raise FileNotFoundError(

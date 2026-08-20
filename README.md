@@ -13,9 +13,9 @@ Pairformer stack. Sweeping β at inference time produces ensembles that
 recover alternative conformations of fold-switching proteins, GPCRs,
 membrane transporters, and other dual-state systems.
 
-The change is a few lines in each model, so writing it into your own copy works
-as well. [`patches/`](patches/README.md) shows where those lines go, and the CLI
-here runs the β sweep.
+The change is a few lines in each model, so you can write it into your own copy
+instead of installing this. [`patches/`](patches/README.md) shows where those
+lines go, and the CLI here runs the β sweep.
 
 See the paper for the full method and benchmark:
 [Biasing Conformational Sampling in AlphaFold 3 and Boltz-2 via Pair Representation Scaling](https://doi.org/10.1021/acs.jcim.6c02094)
@@ -34,8 +34,8 @@ pip install -e ".[boltz]"
 ```
 
 Boltz-2 needs no patching. The CLI applies the scaling at runtime on top of a
-stock `boltz` install. On GPU, Boltz-2 uses the `cuequivariance` triangle
-kernels, which the `boltz` extra installs. For an install without them, use
+stock `boltz` install. The `boltz` extra also installs the `cuequivariance`
+triangle kernels that Boltz-2 uses on GPU. To install without them, use
 `.[boltz-nokernels]` and pass `--no_kernels`.
 
 AlphaFold 3 is built from its own source and its model parameters are requested
@@ -74,8 +74,8 @@ Each β value gets its own sub-directory (e.g., `output_boltz2/beta_neg0p30/`).
 Setting β = 0 reproduces stock Boltz-2 or AlphaFold 3 inference.
 
 The shipped examples declare `msa: empty` and run in single-sequence mode. Add
-`--use_msa_server` for an input that has no MSA of its own and should get one
-from the ColabFold server.
+`--use_msa_server` to fetch an MSA from the ColabFold server for inputs that
+carry none.
 
 ## Examples
 

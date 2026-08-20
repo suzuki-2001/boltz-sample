@@ -19,8 +19,7 @@ COPY src /opt/prs/src
 COPY patches /opt/prs/patches
 COPY pyproject.toml README.md LICENSE /opt/prs/
 
-# python3 resolves to the AlphaFold 3 virtual environment through PATH, so the
-# prs console script lands next to run_alphafold.py's dependencies.
+# python3 resolves to the AlphaFold 3 virtual environment through PATH.
 RUN uv pip install --python "$(command -v python3)" -e /opt/prs
 
 ENV AF3_REPO=/app/alphafold

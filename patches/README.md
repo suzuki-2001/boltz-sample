@@ -27,8 +27,7 @@ from the checkpoint hyper-parameters and stays unscaled.
 
 ## AlphaFold 3
 
-AlphaFold 3 has no PyPI distribution and its model parameters are requested from
-Google, so the patch is applied to your own checkout:
+AlphaFold 3 is built from its own source, so the patch goes into your checkout:
 
 ```bash
 prs patch-af3 /path/to/alphafold3

@@ -6,7 +6,7 @@ Upstream: https://github.com/jwohlwend/boltz at tag v2.2.1
 Adds a --beta option to `boltz predict` and multiplies the pair representation
 by (1 + beta) once before the Pairformer stack. beta = 0 reproduces stock
 inference. The prs CLI applies the same scaling at runtime, so this patch is
-only needed to modify a Boltz-2 checkout directly.
+for modifying a Boltz-2 checkout itself.
 
 Apply from the Boltz-2 repository root:
 

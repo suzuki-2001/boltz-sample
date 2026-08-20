@@ -71,5 +71,4 @@ def test_missing_pairformer_raises():
 
 
 def test_zero_beta_installs_nothing():
-    # Returns before importing boltz, so this holds with or without boltz.
     assert boltz_hook.install(0.0) is None

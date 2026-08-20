@@ -1,8 +1,8 @@
 """Pair representation scaling for an unmodified Boltz installation.
 
 Multiplies the pair representation by (1 + beta) once before the trunk
-Pairformer stack, which is the change in patches/boltz-2.2.1.patch applied at
-runtime instead of in the source.
+Pairformer stack. patches/boltz-2.2.1.patch makes the same change in the
+Boltz-2 source.
 
 The trunk models import `PairformerModule` into their own module namespace, so
 rebinding that name to a scaled subclass reaches the trunk alone. The confidence

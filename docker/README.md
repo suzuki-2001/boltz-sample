@@ -5,8 +5,7 @@ that matches the model weights you have access to.
 
 ## Boltz-2
 
-Boltz-2 comes from PyPI and the weights are downloaded on first use, so the
-image builds in one step from the repository root.
+The image builds in one step from the repository root.
 
 ```bash
 docker build -f docker/boltz2.Dockerfile -t prs-boltz2 .
