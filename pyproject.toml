@@ -17,9 +17,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-boltz = [
-    "boltz @ file://localhost/${PROJECT_ROOT}/third_party/boltz",
-]
+boltz = ["boltz[cuda]==2.2.1"]
+boltz-nokernels = ["boltz==2.2.1"]
 lint = ["ruff"]
 dev = ["pytest>=7.0"]
 

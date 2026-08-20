@@ -1,0 +1,105 @@
+Pair representation scaling for Boltz-2.
+
+Upstream: https://github.com/jwohlwend/boltz at tag v2.2.1
+          (commit cb04aeccdd480fd4db707f0bbafde538397fa2ac)
+
+Adds a --beta option to `boltz predict` and multiplies the pair representation
+by (1 + beta) once before the Pairformer stack. beta = 0 reproduces stock
+inference. The prs CLI applies the same scaling at runtime, so this patch is
+only needed to modify a Boltz-2 checkout directly.
+
+Apply from the Boltz-2 repository root:
+
+    git apply -p1 patches/boltz-2.2.1.patch
+
+--- a/src/boltz/main.py
++++ b/src/boltz/main.py
+@@ -74,6 +74,9 @@
+     activation_checkpointing: bool = False
+     offload_to_cpu: bool = False
+     v2: bool = False
++    # Pair representation scaling β: z := (1 + β)·z before Pairformer stack.
++    # β = 0 reproduces stock inference.
++    scale_uniform_beta: float = 0.0
+ 
+ 
+ @dataclass
+@@ -86,6 +89,7 @@
+     activation_checkpointing: bool = False
+     offload_to_cpu: bool = False
+     v2: bool = True
++    scale_uniform_beta: float = 0.0
+ 
+ 
+ @dataclass
+@@ -1039,6 +1043,17 @@
+     is_flag=True,
+     help=" to dump the s and z embeddings into a npz file. Default is False.",
+ )
++@click.option(
++    "--beta",
++    type=float,
++    default=0.0,
++    help=(
++        "Pair representation scaling factor. Multiplies the pair "
++        "representation z by (1 + beta) before the Pairformer stack. "
++        "beta = 0 reproduces stock Boltz inference. Use the prs CLI "
++        "to sweep multiple beta values in a single run."
++    ),
++)
+ def predict(  # noqa: C901, PLR0915, PLR0912
+     data: str,
+     out_dir: str,
+@@ -1077,6 +1092,7 @@
+     num_subsampled_msa: int = 1024,
+     no_kernels: bool = False,
+     write_embeddings: bool = False,
++    beta: float = 0.0,
+ ) -> None:
+     """Run predictions with Boltz."""
+     # If cpu, write a friendly warning
+@@ -1230,12 +1246,12 @@
+         diffusion_params = Boltz2DiffusionParams()
+         step_scale = 1.5 if step_scale is None else step_scale
+         diffusion_params.step_scale = step_scale
+-        pairformer_args = PairformerArgsV2()
++        pairformer_args = PairformerArgsV2(scale_uniform_beta=beta)
+     else:
+         diffusion_params = BoltzDiffusionParams()
+         step_scale = 1.638 if step_scale is None else step_scale
+         diffusion_params.step_scale = step_scale
+-        pairformer_args = PairformerArgs()
++        pairformer_args = PairformerArgs(scale_uniform_beta=beta)
+ 
+     msa_args = MSAModuleArgs(
+         subsample_msa=subsample_msa,
+--- a/src/boltz/model/layers/pairformer.py
++++ b/src/boltz/model/layers/pairformer.py
+@@ -128,6 +128,7 @@
+         post_layer_norm: bool = False,
+         activation_checkpointing: bool = False,
+         v2: bool = False,
++        scale_uniform_beta: float = 0.0,
+         **kwargs,
+     ) -> None:
+         super().__init__()
+@@ -137,6 +138,9 @@
+         self.num_heads = num_heads
+         self.post_layer_norm = post_layer_norm
+         self.activation_checkpointing = activation_checkpointing
++        # Pair representation scaling factor β: z := (1 + β)·z applied once
++        # before the Pairformer stack. β = 0 reproduces stock inference.
++        self.scale_uniform_beta = scale_uniform_beta
+ 
+         self.layers = nn.ModuleList()
+         for _ in range(num_blocks):
+@@ -185,6 +189,9 @@
+         else:
+             chunk_size_tri_attn = None
+ 
++        if self.scale_uniform_beta != 0.0:
++            z = z * (1.0 + self.scale_uniform_beta)
++
+         for layer in self.layers:
+             if self.activation_checkpointing and self.training:
+                 s, z = torch.utils.checkpoint.checkpoint(

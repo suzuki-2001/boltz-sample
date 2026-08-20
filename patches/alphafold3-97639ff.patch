@@ -1,0 +1,72 @@
+Pair representation scaling for AlphaFold 3.
+
+Upstream: https://github.com/google-deepmind/alphafold3 at commit
+          97639fff6fb22c0d9765089026fe296ee506b60a (2026-05-06)
+
+Adds a --beta flag to run_alphafold.py and multiplies the pair representation
+by (1 + beta) before the Pairformer stack in the Evoformer. beta = 0 reproduces
+stock inference. The flag is passed to the Evoformer through the PRS_BETA
+environment variable.
+
+AlphaFold 3 source is licensed under CC BY-NC-SA 4.0.
+
+Apply to your own AlphaFold 3 checkout:
+
+    prs patch-af3 /path/to/alphafold3
+
+or, from the AlphaFold 3 repository root:
+
+    git apply -p1 patches/alphafold3-97639ff.patch
+
+--- a/run_alphafold.py
++++ b/run_alphafold.py
+@@ -336,6 +336,13 @@
+     'Number of diffusion samples to generate.',
+     lower_bound=1,
+ )
++_BETA = flags.DEFINE_float(
++    'beta',
++    0.0,
++    'Pair representation scaling factor. Multiplies the pair representation '
++    'by (1 + beta) before the Pairformer stack. beta = 0 reproduces stock '
++    'AlphaFold 3 inference. Use the prs CLI to sweep multiple beta values.',
++)
+ _NUM_SEEDS = flags.DEFINE_integer(
+     'num_seeds',
+     None,
+@@ -830,6 +837,11 @@
+ 
+ 
+ def main(_):
++  # Propagate β to the Evoformer via env var (read inside the Evoformer
++  # call to avoid threading config through the entire stack).
++  if _BETA.value != 0.0:
++    os.environ['PRS_BETA'] = str(_BETA.value)
++
+   if _JAX_COMPILATION_CACHE_DIR.value is not None:
+     jax.config.update(
+         'jax_compilation_cache_dir', _JAX_COMPILATION_CACHE_DIR.value
+--- a/src/alphafold3/model/network/evoformer.py
++++ b/src/alphafold3/model/network/evoformer.py
+@@ -11,6 +11,7 @@
+ """Evoformer network."""
+ 
+ import functools
++import os as _os
+ 
+ from alphafold3.common import base_config
+ from alphafold3.model import feat_batch
+@@ -326,6 +327,13 @@
+           self.config.pairformer.num_layer
+       )(pairformer_fn)
+ 
++      # Pair representation scaling: z := (1 + β)·z before the Pairformer stack.
++      # β is read from PRS_BETA env var (set by the prs CLI wrapper).
++      # β = 0 reproduces stock AlphaFold 3 inference.
++      _prs_beta = float(_os.environ.get('PRS_BETA', '0.0'))
++      if _prs_beta != 0.0:
++        pair_activations = pair_activations * (1.0 + _prs_beta)
++
+       pair_activations, single_activations = pairformer_stack(
+           (pair_activations, single_activations)
+       )

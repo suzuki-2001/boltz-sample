@@ -6,25 +6,26 @@ Usage:
     prs predict --model af3    --input seq.json --output out/ --beta "-0.45,0,0.45"
 
 Internally:
-  - boltz2: invokes `boltz predict --beta <val>` once per β value (subprocess).
+  - boltz2: runs `boltz predict` once per β value in its own process, with the
+            pair representation scaling hook installed beforehand.
   - af3:    invokes `python run_alphafold.py --beta=<val>` once per β value.
+            The AlphaFold 3 checkout must be patched first: `prs patch-af3`.
 
 Each β value gets its own sub-directory under --output, named `beta_<val>`.
 """
 
 from __future__ import annotations
 
+import importlib.util
 import os
-import shutil
 import subprocess
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
 import click
 
-
-_BOLTZ_DEFAULT_BIN = shutil.which("boltz") or "boltz"
+from prs import af3 as af3_patch
 
 
 def _format_beta_label(value: float) -> str:
@@ -56,16 +57,24 @@ def _run_boltz2(
     extra: Sequence[str],
 ) -> None:
     """Loop over β values, invoke `boltz predict` for each."""
-    boltz_bin = _BOLTZ_DEFAULT_BIN
+    if importlib.util.find_spec("boltz") is None:
+        raise click.UsageError(
+            "boltz is not installed. Install it with: pip install boltz==2.2.1"
+        )
     for beta in betas:
         sub = output_root / _format_beta_label(beta)
         sub.mkdir(parents=True, exist_ok=True)
+        bootstrap = (
+            "import prs.boltz_hook as hook; "
+            f"hook.install({beta!r}); "
+            "from boltz.main import cli; cli(prog_name='boltz')"
+        )
         cmd = [
-            boltz_bin, "predict", str(input_path),
+            sys.executable, "-c", bootstrap,
+            "predict", str(input_path),
             "--out_dir", str(sub),
             "--seed", str(seed),
             "--diffusion_samples", str(samples),
-            "--beta", f"{beta:.6f}",
         ]
         if use_msa_server:
             cmd.append("--use_msa_server")
@@ -85,14 +94,15 @@ def _run_af3(
 ) -> None:
     """Loop over β values, invoke `run_alphafold.py` for each."""
     if af3_run is None:
-        repo_root = Path(__file__).resolve().parents[2]
-        candidate = repo_root / "third_party" / "alphafold3" / "run_alphafold.py"
-        af3_run = str(candidate)
+        repo = os.environ.get("AF3_REPO")
+        if repo is None:
+            raise click.UsageError(
+                "Point prs at your AlphaFold 3 checkout with --af3_run or the "
+                "AF3_REPO environment variable. Patch it first: prs patch-af3 <path>."
+            )
+        af3_run = str(Path(repo) / "run_alphafold.py")
     if not Path(af3_run).exists():
-        raise click.UsageError(
-            f"AlphaFold 3 entrypoint not found: {af3_run}. "
-            f"Set --af3-run or vendor the upstream repo at third_party/alphafold3/."
-        )
+        raise click.UsageError(f"AlphaFold 3 entrypoint not found: {af3_run}")
     for beta in betas:
         sub = output_root / _format_beta_label(beta)
         sub.mkdir(parents=True, exist_ok=True)
@@ -116,7 +126,7 @@ def cli() -> None:
     """Pair Representation Scaling (PRS): β-grid conformational sampling."""
 
 
-@cli.command()
+@cli.command(context_settings={"ignore_unknown_options": True})
 @click.option(
     "--model",
     type=click.Choice(["boltz2", "af3"]),
@@ -175,8 +185,8 @@ def cli() -> None:
     type=str,
     default=None,
     help=(
-        "AF3 only: path to run_alphafold.py. Defaults to "
-        "third_party/alphafold3/run_alphafold.py in this repository."
+        "AF3 only: path to run_alphafold.py in your patched AlphaFold 3 "
+        "checkout. Defaults to $AF3_REPO/run_alphafold.py."
     ),
 )
 @click.argument("extra", nargs=-1, type=click.UNPROCESSED)
@@ -204,6 +214,27 @@ def predict(
                  model_dir, af3_run, list(extra))
     else:  # pragma: no cover
         raise click.UsageError(f"unknown model: {model}")
+
+
+@cli.command("patch-af3")
+@click.argument(
+    "repo",
+    type=click.Path(exists=True, file_okay=False, path_type=Path),
+)
+@click.option(
+    "--patch",
+    "patch_file",
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    default=None,
+    help="Patch to apply. Defaults to patches/alphafold3-97639ff.patch.",
+)
+def patch_af3(repo: Path, patch_file: Path | None) -> None:
+    """Add pair representation scaling to an AlphaFold 3 checkout."""
+    try:
+        patch = patch_file if patch_file is not None else af3_patch.bundled_patch()
+        click.echo(af3_patch.apply_patch(repo.resolve(), patch))
+    except (FileNotFoundError, RuntimeError) as exc:
+        raise click.ClickException(str(exc)) from exc
 
 
 if __name__ == "__main__":
