@@ -100,7 +100,7 @@ Each example ships a [marimo](https://marimo.io/) notebook that computes
 TM-scores to each reference and plots the β-coloured scatter:
 
 ```bash
-pip install marimo tmtools matplotlib
+pip install marimo tmtools biopython matplotlib pandas
 marimo edit example/rfah/visualize_tmscore.py
 ```
 

@@ -20,7 +20,7 @@ bash run_af3.sh          # AlphaFold 3 sweep, output_af3/ (needs AF3_REPO, AF3_M
 ### Visualization
 
 ```bash
-pip install marimo tmtools matplotlib
+pip install marimo tmtools biopython matplotlib pandas
 marimo edit example/rfah/visualize_tmscore.py
 ```
 

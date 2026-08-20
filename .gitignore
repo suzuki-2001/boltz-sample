@@ -164,11 +164,12 @@ cython_debug/
 # Prediction outputs (Boltz / AF3)
 boltz_results_*/
 example/*/output/
+example/*/output_*/
 output/
 output_v2/
 output_test/
 
-# Benchmark data and analyses (kept in separate Zenodo / Figshare release)
+# Local working directories
 benchmark/
 peer-review/
 paper/

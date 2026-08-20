@@ -18,7 +18,7 @@ to put the change in a Boltz-2 checkout instead:
 ```bash
 git clone --branch v2.2.1 https://github.com/jwohlwend/boltz
 cd boltz
-git apply -p1 ../patches/boltz-2.2.1.patch
+git apply -p1 /path/to/pair-representation-scaling/patches/boltz-2.2.1.patch
 ```
 
 It adds a `--beta` option to `boltz predict` and applies the scaling in
