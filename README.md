@@ -5,7 +5,7 @@
 [![JAX](https://img.shields.io/badge/JAX-%E2%89%A50.4-FF6F00?logo=googlecloud&logoColor=white)](https://github.com/jax-ml/jax)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?logo=opensourceinitiative&logoColor=white)](LICENSE)
 
-A small, model-agnostic patch that adds pair representation scaling to
+Pair representation scaling for
 [Boltz-2](https://github.com/jwohlwend/boltz) and
 [AlphaFold 3](https://github.com/google-deepmind/alphafold3). A scalar β
 multiplies the pair representation, `z := (1 + β)·z`, just before the
@@ -25,28 +25,40 @@ See the paper for the full method and benchmark:
 git clone https://github.com/suzuki-2001/pair-representation-scaling.git
 cd pair-representation-scaling
 
-# Install the prs CLI and the patched Boltz-2 (vendored under third_party/)
+# The prs CLI and Boltz-2 from PyPI, with the CUDA triangle kernels
 pip install -e ".[boltz]"
-
-# AlphaFold 3 has its own install path (CMake + JAX); follow the instructions
-# in third_party/alphafold3/README.md.
 ```
 
-A Docker image is provided for each backend; see [docker/](docker/README.md).
+Boltz-2 needs no patching. The CLI applies the scaling at runtime on top of a
+stock `boltz` install. On GPU, Boltz-2 uses the `cuequivariance` triangle
+kernels, which the `boltz` extra installs. For an install without them, use
+`.[boltz-nokernels]` and pass `--no_kernels`.
+
+AlphaFold 3 is built from its own source and its model parameters are requested
+from Google. Patch your checkout once, then point `prs` at it:
+
+```bash
+prs patch-af3 /path/to/alphafold3
+export AF3_REPO=/path/to/alphafold3
+```
+
+Both changes are kept as diffs against a pinned upstream revision in
+[`patches/`](patches/README.md).
+
+A Docker image is available for each backend, see [docker/](docker/README.md).
 
 ## Usage
 
 A single `prs predict` command sweeps a β-grid for either backend.
 
 ```bash
-# Boltz-2 — MSA fetched from the ColabFold server at runtime
+# Boltz-2
 prs predict --model boltz2 \
     --input example/rfah/boltz2_input.yaml \
     --output example/rfah/output_boltz2 \
-    --beta "-0.6,-0.3,0,0.3,0.6" \
-    --use_msa_server
+    --beta "-0.6,-0.3,0,0.3,0.6"
 
-# AlphaFold 3 — needs --model_dir pointing at the AF3 parameters
+# AlphaFold 3 — needs $AF3_REPO (or --af3_run) and the AF3 parameters
 prs predict --model af3 \
     --input example/rfah/af3_input.json \
     --output example/rfah/output_af3 \
@@ -59,6 +71,10 @@ prs predict --model boltz2 --input ... --output ... --beta 0.45
 
 Each β value gets its own sub-directory (e.g., `output_boltz2/beta_neg0p30/`).
 Setting β = 0 reproduces stock Boltz-2 or AlphaFold 3 inference.
+
+The shipped examples declare `msa: empty` and run in single-sequence mode. Add
+`--use_msa_server` for an input that has no MSA of its own and should get one
+from the ColabFold server.
 
 ## Examples
 
@@ -74,7 +90,7 @@ example/
 ```bash
 cd example/rfah
 bash run_boltz2.sh         # Boltz-2 sweep
-bash run_af3.sh            # AlphaFold 3 sweep (needs AF3_MODEL_DIR)
+bash run_af3.sh            # AlphaFold 3 sweep (needs AF3_REPO and AF3_MODEL_DIR)
 ```
 
 ### Visualization
@@ -91,14 +107,17 @@ marimo edit example/rfah/visualize_tmscore.py
 
 This repository builds on the following projects and datasets:
 
-- **Boltz-2** — Passaro *et al.* 2025, *bioRxiv*. [doi.org/10.1101/2025.06.14.659707](https://doi.org/10.1101/2025.06.14.659707). Primary backend; the Boltz-2 source is vendored under [`third_party/boltz/`](third_party/boltz/) with the β patch applied.
+- **Boltz-2** — Passaro *et al.* 2025, *bioRxiv*. [doi.org/10.1101/2025.06.14.659707](https://doi.org/10.1101/2025.06.14.659707). Primary backend, used at version 2.2.1 under the MIT License.
 - **Boltz-1** — Wohlwend *et al.* 2024, *bioRxiv*. [doi.org/10.1101/2024.11.19.624167](https://doi.org/10.1101/2024.11.19.624167). Pairformer-diffusion architecture that Boltz-2 inherits.
-- **AlphaFold 3** — Abramson *et al.* 2024, *Nature*. [doi.org/10.1038/s41586-024-07487-w](https://doi.org/10.1038/s41586-024-07487-w). Second backend; source vendored under [`third_party/alphafold3/`](third_party/alphafold3/) with the β patch applied.
+- **AlphaFold 3** — Abramson *et al.* 2024, *Nature*. [doi.org/10.1038/s41586-024-07487-w](https://doi.org/10.1038/s41586-024-07487-w). Second backend, used at commit `97639ff` under CC BY-NC-SA 4.0.
 - **AFsample2** — Kalakoti & Wallner 2025, *Communications Biology*. [doi.org/10.1038/s42003-025-07791-9](https://doi.org/10.1038/s42003-025-07791-9). The OC23 benchmark targets are used in our evaluations.
 - **IOMemP** — Xie & Huang 2024, *Journal of Chemical Information and Modeling*. [doi.org/10.1021/acs.jcim.3c01936](https://doi.org/10.1021/acs.jcim.3c01936). Membrane-transporter dual-state references are sourced from this benchmark.
 
 ## Changelog
 
+- [2026/8/20] Stopped vendoring Boltz-2 and AlphaFold 3. Boltz-2 comes from
+  PyPI and is scaled at runtime, AlphaFold 3 is patched in place with
+  `prs patch-af3`, and both changes are kept as diffs under `patches/`.
 - [2026/8/20] Published in the Journal of Chemical Information and Modeling,
   [doi.org/10.1021/acs.jcim.6c02094](https://doi.org/10.1021/acs.jcim.6c02094).
 - [2026/6/24] Posted the revised preprint (v2) to bioRxiv, now titled
